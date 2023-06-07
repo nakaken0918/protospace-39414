@@ -1,0 +1,19 @@
+<main class="main">
+  <div class="inner">
+
+    <% if user_signed_in? %><%# 条件分岐（ログインしている場合 %>
+
+      <div class="greeting">
+        こんにちは、
+        <%= link_to current_user.name, root_path(current_user) %>さん
+      </div>
+
+    <% else %>
+    <% end %><%# // %>
+
+    <div class="card__wrapper">
+      <%# 部分テンプレートでプロトタイプ投稿一覧を表示 %>
+      <%= render partial: 'prototype', collection: @prototypes %>
+    </div>
+  </div>
+</main>
