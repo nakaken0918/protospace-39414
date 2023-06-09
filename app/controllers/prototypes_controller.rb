@@ -38,12 +38,13 @@ class PrototypesController < ApplicationController
   end
 
   def update
-    prototype = Prototype.find(params[:id])
-     # 編集されたprototypeデータと投稿主のuser_idを関連付けて保存。
-    if prototype.update(prototype_params)
-      redirect_to prototype_path(prototype.id)
+    @prototype = Prototype.find(params[:id])
+    @updated_prototype = Prototype.new(prototype_params)
+  
+    if @updated_prototype.valid?
+      @prototype.update(prototype_params)
+      redirect_to prototype_path(@prototype.id)
     else
-      # 編集フォームに戻る。
       render :edit
     end
   end
