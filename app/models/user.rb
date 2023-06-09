@@ -4,7 +4,9 @@ class User < ApplicationRecord
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :validatable
 
-  has_many :prototypes
+  has_many :prototypes # prototypesテーブルとのアソシエーション
+
+  has_many :comments # commentsテーブルとのアソシエーション
 
   with_options presence: true do
     validates :name
@@ -12,4 +14,5 @@ class User < ApplicationRecord
     validates :occupation
     validates :position
   end
+  
 end

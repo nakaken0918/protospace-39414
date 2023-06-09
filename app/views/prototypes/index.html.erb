@@ -5,7 +5,7 @@
 
       <div class="greeting">
         こんにちは、
-        <%= link_to current_user.name, root_path(current_user) %>さん
+        <%= link_to current_user.name + "さん", user_path(current_user) %>
       </div>
 
     <% else %>
