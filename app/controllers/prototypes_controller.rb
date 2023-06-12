@@ -1,7 +1,8 @@
 class PrototypesController < ApplicationController
   # ゲストユーザーに閲覧を許可する。
-  before_action :authenticate_user!,except:[:index, :show, :edit]
+  before_action :authenticate_user!, except:[:index, :show]
   before_action :move_to_index, except: [:index, :show]
+  before_action :set_user, only: [:edit, :update]
 
   def index
     # 全てのprototypeを代入する。
@@ -35,10 +36,20 @@ class PrototypesController < ApplicationController
 
   def edit
     @prototype = Prototype.find(params[:id])
+    
+    unless current_user == @prototype.user
+      redirect_to root_path
+    end
   end
 
   def update
     @prototype = Prototype.find(params[:id])
+    
+    unless current_user == @prototype.user
+      redirect_to root_path
+      return
+    end
+    
     @updated_prototype = Prototype.new(prototype_params)
   
     if @updated_prototype.valid?
@@ -65,6 +76,10 @@ class PrototypesController < ApplicationController
     unless user_signed_in?
       redirect_to action: :index
     end
+  end
+
+  def set_user
+    @user = current_user
   end
 
 end
