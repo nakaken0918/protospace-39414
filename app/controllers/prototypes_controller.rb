@@ -1,9 +1,9 @@
 class PrototypesController < ApplicationController
   # 全てのユーザーに許可する。
-  before_action :authenticate_user!,only:[:index, :show]
-  before_action :move_to_index, except: [:show]
+  before_action :authenticate_user!, except:[:index, :show]
+  before_action :move_to_index, except: [:index, :show]
   # ユーザー本人のみに許可する。
-  before_action :set_user, only: [:edit, :update]
+  before_action :set_user, only: [:edit, :update, :destroy]
 
   def index
     # 全てのprototypeを代入する。
@@ -32,11 +32,12 @@ class PrototypesController < ApplicationController
     @comment = @prototype.comments.build
     # コメント内容の表示
     @comments = @prototype.comments.includes(:user)
+
   end
 
   def edit
     @prototype = Prototype.find(params[:id])
-
+    
     unless current_user == @prototype.user
       redirect_to root_path
     end
@@ -46,14 +47,18 @@ class PrototypesController < ApplicationController
     @prototype = Prototype.find(params[:id])
   
     unless current_user == @prototype.user
-      redirect_to root_path
+      render :edit
       return
     end
   
-    if @prototype.update(prototype_params.except(:image))
-      redirect_to prototype_path(@prototype.id)
-    else
+    if params[:prototype][:title].blank? || params[:prototype][:catch_copy].blank? || params[:prototype][:concept].blank?
       render :edit
+    else
+      if @prototype.update(prototype_params)
+        redirect_to prototype_path(@prototype.id)
+      else
+        render :edit
+      end
     end
   end
 
@@ -79,5 +84,5 @@ class PrototypesController < ApplicationController
     @user = current_user
   end
 
-
 end
+

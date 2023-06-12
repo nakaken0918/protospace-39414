@@ -14,5 +14,4 @@ class Prototype < ApplicationRecord
     validates :image
   end
 
-
 end
