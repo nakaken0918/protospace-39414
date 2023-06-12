@@ -44,20 +44,21 @@ class PrototypesController < ApplicationController
 
   def update
     @prototype = Prototype.find(params[:id])
-    
+  
     unless current_user == @prototype.user
       redirect_to root_path
       return
     end
-    
-    @updated_prototype = Prototype.new(prototype_params)
   
-    if @updated_prototype.valid?
-      @prototype.update(prototype_params)
-      redirect_to prototype_path(@prototype.id)
+    if params[:prototype][:image].nil?
+      # 画像が設定されていない場合は、画像を更新せずにその他の属性だけを更新する。
+      @prototype.update(prototype_params.except(:image))
     else
-      render :edit
+      # 画像が設定されている場合は、全ての属性を更新する。
+      @prototype.update(prototype_params)
     end
+  
+    redirect_to prototype_path(@prototype.id)
   end
 
   def destroy
