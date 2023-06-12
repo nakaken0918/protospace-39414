@@ -1,7 +1,8 @@
 class PrototypesController < ApplicationController
-  # ゲストユーザーに閲覧を許可する。
+  # 全てのユーザーに許可する。
   before_action :authenticate_user!, except:[:index, :show]
   before_action :move_to_index, except: [:index, :show]
+  # ユーザー本人のみに許可する。
   before_action :set_user, only: [:edit, :update]
 
   def index
@@ -30,8 +31,8 @@ class PrototypesController < ApplicationController
     # コメント欄の表示
     @comment = @prototype.comments.build
     # コメント内容の表示
-    @comment = Comment.new
     @comments = @prototype.comments.includes(:user)
+
   end
 
   def edit
