@@ -1,7 +1,7 @@
 class PrototypesController < ApplicationController
   # 全てのユーザーに許可する。
-  before_action :authenticate_user!, except:[:index, :show]
-  before_action :move_to_index, except: [:index, :show]
+  before_action :authenticate_user!,only:[:index, :show]
+  before_action :move_to_index, except: [:show]
   # ユーザー本人のみに許可する。
   before_action :set_user, only: [:edit, :update]
 
@@ -32,12 +32,11 @@ class PrototypesController < ApplicationController
     @comment = @prototype.comments.build
     # コメント内容の表示
     @comments = @prototype.comments.includes(:user)
-
   end
 
   def edit
     @prototype = Prototype.find(params[:id])
-    
+
     unless current_user == @prototype.user
       redirect_to root_path
     end
@@ -51,15 +50,11 @@ class PrototypesController < ApplicationController
       return
     end
   
-    if params[:prototype][:image].nil?
-      # 画像が設定されていない場合は、画像を更新せずにその他の属性だけを更新する。
-      @prototype.update(prototype_params.except(:image))
+    if @prototype.update(prototype_params.except(:image))
+      redirect_to prototype_path(@prototype.id)
     else
-      # 画像が設定されている場合は、全ての属性を更新する。
-      @prototype.update(prototype_params)
+      render :edit
     end
-  
-    redirect_to prototype_path(@prototype.id)
   end
 
   def destroy
@@ -83,5 +78,6 @@ class PrototypesController < ApplicationController
   def set_user
     @user = current_user
   end
+
 
 end
